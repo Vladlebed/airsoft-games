@@ -1,5 +1,6 @@
 import teamBattle from "./teamBattle";
 import { Component } from "vue";
+import kingOfHill from "./kingOfHill";
 
 export interface IGame {
   name: string
@@ -20,6 +21,7 @@ export interface IConfigField {
 }
 
 const games: { [key: string]: IGame } = {
-  teamBattle
+  teamBattle,
+  kingOfHill
 }
 export default games

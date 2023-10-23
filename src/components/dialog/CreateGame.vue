@@ -24,7 +24,7 @@
 import {defineComponent} from 'vue'
 import games from "@/games";
 import dialogs from "@/store/dialogs";
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep, kebabCase } from 'lodash-es'
 import { push, getDatabase, ref } from 'firebase/database'
 
 export default defineComponent({
@@ -63,7 +63,7 @@ export default defineComponent({
           this.$router.push({
             name: 'Game',
             params: {
-              gameType: this.selectedGame.gameType,
+              gameType: kebabCase(this.selectedGame.gameType),
               gameId: r.key
             }
           })
