@@ -33,3 +33,11 @@ export class Dialog {
     this.dialogs.length = 0
   }
 }
+
+export const getProgressColor = (value: number) => {
+  switch (true) {
+    case value >= 50: return 'green'
+    case value >= 20: return 'orange'
+    default: return 'red'
+  }
+}

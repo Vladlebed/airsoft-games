@@ -12,8 +12,13 @@
       @keydown.esc="closeDialog(dialog.name)"
     >
       <v-card>
-        <v-card-title v-if="dialog.title">
+        <v-card-title v-if="dialog.title" class="d-flex align-center justify-space-between">
           {{ dialog.title }}
+          <v-btn flat class="ml-4 mt-2" icon @click="closeDialog(dialog.name)">
+            <v-icon>
+              mdi-close
+            </v-icon>
+          </v-btn>
         </v-card-title>
         <component
           :is="dialog.component"

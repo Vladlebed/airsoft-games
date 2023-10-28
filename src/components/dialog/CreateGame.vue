@@ -6,6 +6,7 @@
       :items="computedGames"
       item-title="name"
       return-object
+      variant="outlined"
       @update:model-value="selectGame"
     />
     <template v-if="selectedGame">
@@ -57,7 +58,6 @@ export default defineComponent({
     createGame() {
       const db = getDatabase()
       this.isLoading = true
-      console.log('this.selectedGame.state(this.selectedGame.config)', this.selectedGame.state(this.selectedGame.config))
       push(ref(db, `/games`), this.selectedGame.state(this.selectedGame.config))
         .then((r) => {
           this.$router.push({

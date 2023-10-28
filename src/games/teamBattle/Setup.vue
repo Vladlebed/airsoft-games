@@ -30,9 +30,12 @@ export default defineComponent({
       label="Кол-во команд"
       @update:model-value="changeModel('teams', +$event || 0)"
     />
-    <v-text-field
+    <v-slider
       :model-value="modelValue.teamHealth"
-      label="Жизни команды"
+      :label="`Жизни команды: ${modelValue.teamHealth}`"
+      :step="1"
+      min="1"
+      max="200"
       @update:model-value="changeModel('teamHealth', +$event) || 0"
     />
   </div>

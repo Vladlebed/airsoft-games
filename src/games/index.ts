@@ -1,6 +1,6 @@
 import teamBattle from "./teamBattle";
+import domination from "./domination";
 import { Component } from "vue";
-import kingOfHill from "./kingOfHill";
 
 export interface IGame {
   name: string
@@ -22,6 +22,6 @@ export interface IConfigField {
 
 const games: { [key: string]: IGame } = {
   teamBattle,
-  kingOfHill
+  domination
 }
 export default games
