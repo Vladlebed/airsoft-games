@@ -51,6 +51,7 @@
             class="pa-8 d-flex align-center mb-4"
             :loading="capture.team === teamIndex"
             @mousedown="captureMousedown(teamIndex)"
+            @touchstart="captureMousedown(teamIndex)"
           >
             <template #loader>
               <v-progress-linear
@@ -270,6 +271,7 @@ export default defineComponent({
             this.gameState.teams[point.owner].score += this.computedCurrentPoint.cost
           }
           window.removeEventListener('mouseup', this.captureMouseup)
+          window.removeEventListener('touchend', this.captureMouseup)
           this.updateGameState()
         }
       }
@@ -291,6 +293,7 @@ export default defineComponent({
       this.capture.start = new Date()
       this.capture.team = teamIndex
       window.addEventListener('mouseup', this.captureMouseup)
+      window.addEventListener('touchend', this.captureMouseup)
     },
 
     captureMouseup() {
@@ -298,6 +301,7 @@ export default defineComponent({
       this.capture.left = null
       this.capture.team = null
       window.removeEventListener('mouseup', this.captureMouseup)
+      window.removeEventListener('touchend', this.captureMouseup)
     },
 
     startGame() {
