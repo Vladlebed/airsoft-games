@@ -1,5 +1,7 @@
 <template>
   <v-main>
+    <v-breadcrumbs v-if="false" color="primary" :items="breadcrumbs" divider=">" />
+
     <router-view />
 
     <v-dialog
@@ -29,7 +31,7 @@
   </v-main>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import dialogs from '@/store/dialogs.js'
 import {computed} from "vue";
 
@@ -39,5 +41,24 @@ const modals = computed(() => {
 
 const closeDialog = (dialogName) => {
   dialogs.modals.remove(dialogName)
+}
+
+export default {
+  setup() {
+    return {
+      modals,
+      closeDialog,
+    }
+  },
+
+  computed: {
+    breadcrumbs() {
+      return this.$route.matched?.map(({ name }) => ({
+        title: name,
+        disabled: false,
+        to: { name, params: this.$route.params }
+      })) || []
+    },
+  }
 }
 </script>

@@ -1,14 +1,20 @@
 <template>
-  <div>
-    <v-list>
+  <v-container class="pa-6">
+    <v-list class="pa-4 text-center ma-auto" max-width="600">
       <v-list-item @click="createGame">
         Создать игру
       </v-list-item>
       <v-list-item v-if="false" @click="connectGame">
         Подключиться к игре
       </v-list-item>
+      <v-list-item v-if="false" @click="auth">
+        Вход / Регистрация
+      </v-list-item>
+      <v-list-item v-if="false" :to="{ name: 'Profile', params: { id: 123 } }">
+        Профиль
+      </v-list-item>
     </v-list>
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -29,6 +35,14 @@ export default {
         name: 'connectGame',
         title: 'Подключиться к игре',
         component: markRaw(defineAsyncComponent(() => import('@/components/dialog/ConnectGame.vue')))
+      })
+    },
+
+    auth() {
+      dialogs.modals.push({
+        name: 'auth',
+        title: 'Вход / Регистрация',
+        component: markRaw(defineAsyncComponent(() => import('@/components/dialog/Auth.vue')))
       })
     },
   }

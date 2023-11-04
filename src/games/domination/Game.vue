@@ -1,5 +1,11 @@
 <template>
   <v-container v-if="gameState">
+    <template v-if="gameStatus === 'inProcess'">
+      <v-progress-linear :model-value="game.progress" :color="getProgressColor(game.progress)" height="30">
+        Играть осталось: {{game.minutes}}:{{game.seconds >= 10 ? game.seconds : `0${game.seconds}`}}
+      </v-progress-linear>
+      <v-divider class="mt-4 mb-4"/>
+    </template>
     <div v-if="(currentPoint === null) && !isAdmin && gameStatus !== 'end'">
       <p>Выберите точку</p>
       <v-divider class="mt-4 mb-4"/>
@@ -18,11 +24,8 @@
       </v-btn>
     </div>
     <template v-else>
+
       <template v-if="!isAdmin && gameStatus === 'inProcess'">
-        <v-progress-linear :model-value="game.progress" :color="getProgressColor(game.progress)" height="30">
-          Играть осталось: {{game.minutes}}:{{game.seconds >= 10 ? game.seconds : `0${game.seconds}`}}
-        </v-progress-linear>
-        <v-divider class="mt-4 mb-4"/>
         <h2 class="text-center mt-4 mb-4">{{gameState.points[currentPoint].name}}</h2>
         <p class="font-weight-bold mb-2">Информация:</p>
         <p>Владелец:
@@ -48,7 +51,7 @@
             v-if="gameState.points[currentPoint].owner !== teamIndex"
             width="100%"
             color="primary"
-            class="pa-8 d-flex align-center mb-4"
+            class="pa-8 d-flex align-center mb-4 selection-disabled"
             :loading="capture.team === teamIndex"
             @mousedown="captureMousedown(teamIndex)"
             @touchstart="captureMousedown(teamIndex)"
@@ -89,7 +92,7 @@
         v-if="isAdmin && gameStatus === 'inProcess'"
         color="red"
         width="100%"
-        class="pa-16 mb-4 d-flex align-content-center"
+        class="mb-4"
         :loading="isLoading"
         @click="endGame"
       >
@@ -146,7 +149,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import type config from "./config";
-import {getDatabase, ref, onValue, update} from "firebase/database";
+import {getDatabase, ref, onValue, update, runTransaction } from "firebase/database";
 import gameChangeSignal from '@/assets/gameChange.mp3'
 import {getProgressColor} from "@/helpers";
 const audio = new Audio()
@@ -245,7 +248,20 @@ export default defineComponent({
       const db = getDatabase();
       const {gameId} = this.$route.params
       const Ref = ref(db, `/games/${gameId}`);
+      console.log('update', this.gameState)
       update(Ref, this.gameState)
+    },
+
+    incrementScore(teamIndex, score) {
+      const db = getDatabase();
+      const {gameId} = this.$route.params
+      const Ref = ref(db, `/games/${gameId}/teams/${teamIndex}`);
+      runTransaction(Ref, (post) => {
+        if (post) {
+          post.score += score
+        }
+        return post
+      })
     },
 
     tick() {
@@ -264,15 +280,15 @@ export default defineComponent({
           this.capture.left = null
           const point = this.gameState.points[this.currentPoint]
           if (point.owner !== -1) {
-            this.gameState.teams[point.owner].score -= point.lossCost
+            this.incrementScore(point.owner, -point.lossCost)
           }
           point.owner = this.capture.team
+          this.updateGameState()
           if (this.gameState.immediateProfit) {
-            this.gameState.teams[point.owner].score += this.computedCurrentPoint.cost
+            this.incrementScore(point.owner, this.computedCurrentPoint.cost)
           }
           window.removeEventListener('mouseup', this.captureMouseup)
           window.removeEventListener('touchend', this.captureMouseup)
-          this.updateGameState()
         }
       }
       if (this.computedCurrentPoint?.owner !== -1 && this.computedCurrentPoint?.accrualInterval) {
@@ -283,8 +299,7 @@ export default defineComponent({
         this.calculatePointAccrual()
         if (this.accrual.progress >= 100) {
           this.accrual.start = null
-          this.gameState.teams[this.computedCurrentPoint.owner].score += this.computedCurrentPoint.cost
-          this.updateGameState()
+          this.incrementScore(this.computedCurrentPoint.owner, this.computedCurrentPoint.cost)
         }
       }
     },
