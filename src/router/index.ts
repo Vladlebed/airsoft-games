@@ -4,17 +4,24 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
+    name: 'Index',
+    redirect: { name: 'Home' },
     component: () => import('@/layouts/default/Default.vue'),
     children: [
       {
         path: '',
         name: 'Home',
-        component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
+        component: () => import('@/views/Home.vue'),
       },
       {
         path: '/game/:gameType/:gameId',
         name: 'Game',
-        component: () => import(/* webpackChunkName: "game" */ '@/views/Game.vue'),
+        component: () => import('@/views/Game.vue'),
+      },
+      {
+        path: '/profile/:id',
+        name: 'Profile',
+        component: () => import('@/views/Profile.vue'),
       },
     ],
   },

@@ -34,7 +34,7 @@
         v-if="isAdmin && gameStatus === 'waiting'"
         color="orange"
         width="100%"
-        class="pa-16 mb-4 d-flex align-content-center"
+        class="mb-4"
         :loading="isLoading"
         @click="startGame"
       >
@@ -44,7 +44,7 @@
         v-if="isAdmin && gameStatus === 'inProcess'"
         color="red"
         width="100%"
-        class="pa-16 mb-4 d-flex align-content-center"
+        class="mb-4"
         :loading="isLoading"
         @click="endGame"
       >
