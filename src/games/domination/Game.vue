@@ -293,7 +293,6 @@ export default defineComponent({
           }
           window.removeEventListener('mouseup', this.captureMouseup)
           window.removeEventListener('touchend', this.captureMouseup)
-
         }
       }
       if (this.computedCurrentPoint?.owner !== -1 && this.computedCurrentPoint?.accrualInterval) {
